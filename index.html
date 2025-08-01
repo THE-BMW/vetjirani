@@ -4,7 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>VetJirani</title>
 
   <!-- Favicon -->
@@ -30,18 +33,10 @@
     <div class="container">
       <a href="#" class="logo">Vetjirani</a>
 
-      <li>
-        <!-- Dark Mode Toggle -->
-        <button class="nav-open-btn">☰</button>
-
-        
-      </li>
-           
       <!-- Desktop Navigation -->
       <nav class="navbar" data-navbar>
-        
         <ul class="navbar-list">
-          <li><a href="#home" class="navbar-link" data-nav-link> Home</a></li>
+          <li><a href="#home" class="navbar-link" data-nav-link>Home</a></li>
           <li><a href="#about" class="navbar-link" data-nav-link>About</a></li>
           <li><a href="#services" class="navbar-link" data-nav-link>Services</a></li>
           <li><a href="#features" class="navbar-link" data-nav-link>Features</a></li>
@@ -53,13 +48,15 @@
       </nav>
   
       <!-- Mobile Menu Button -->
-      <button class="nav-open-btn" aria-label="open menu" data-nav-toggler>
-        <ion-icon name="menu-outline" aria-hidden="true"></ion-icon>
+      <button class="nav-open-btn hamburger" aria-label="open menu" data-nav-toggler>
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
   
       <div class="overlay" data-nav-toggler data-overlay></div>
     </div>
-  </header>   
+  </header>
   
 
   <!-- Main Content -->
@@ -602,27 +599,11 @@
   </div>
 </footer>
 
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js" crossorigin="anonymous"></script>
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
 </script>
-
-
-<script>
-  // Mobile menu toggle
-  document.addEventListener('DOMContentLoaded', function () {
-    const navTogglers = document.querySelectorAll('[data-nav-toggler]');
-    const navbar = document.querySelector('.navbar');
-    const overlay = document.querySelector('[data-overlay]');
-
-    navTogglers.forEach(toggler => {
-      toggler.addEventListener('click', () => {
-        navbar.classList.toggle('active');
-        overlay.classList.toggle('active');
-      });
-    });
-  });
-</script>
+<script src="./assets/js/script.js"></script>
 </body>
 
 </html>

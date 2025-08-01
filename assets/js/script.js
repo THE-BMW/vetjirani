@@ -19,13 +19,31 @@ const addEventOnElem = function (elem, type, callback) {
 const navbar = document.querySelector("[data-navbar]");
 const navToggler = document.querySelectorAll("[data-nav-toggler]");
 const overlay = document.querySelector("[data-overlay]");
+const hamburger = document.querySelector(".nav-open-btn.hamburger");
 
 const toggleNavbar = function () {
   navbar.classList.toggle("active");
   overlay.classList.toggle("active");
+  if (hamburger) {
+    hamburger.classList.toggle("active");
+  }
+  document.body.classList.toggle("menu-open");
+  
+  // Prevent body scroll when menu is open
+  if (navbar.classList.contains("active")) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
 }
 
+// Ensure all nav togglers work
 addEventOnElem(navToggler, "click", toggleNavbar);
+
+// Also add click to hamburger specifically
+if (hamburger) {
+  hamburger.addEventListener("click", toggleNavbar);
+}
 
 /**
  * Close navbar when clicking on navbar links
@@ -35,18 +53,46 @@ const navLinks = document.querySelectorAll("[data-nav-link]");
 const closeNavbar = function () {
   navbar.classList.remove("active");
   overlay.classList.remove("active");
+  if (hamburger) {
+    hamburger.classList.remove("active");
+  }
+  document.body.classList.remove("menu-open");
+  document.body.style.overflow = ""; // Restore scroll
 }
 
 addEventOnElem(navLinks, "click", closeNavbar);
 
-/**
- * Accordion toggle
- */
-const accordionAction = document.querySelectorAll("[data-accordion-action]");
+// Close menu when clicking outside
+if (overlay) {
+  overlay.addEventListener("click", closeNavbar);
+}
 
-const toggleAccordion = function () { this.classList.toggle("active"); }
+// Close menu when window is resized to desktop
+window.addEventListener("resize", function() {
+  if (window.innerWidth >= 992) {
+    closeNavbar();
+  }
+});
 
-addEventOnElem(accordionAction, "click", toggleAccordion);
+// Handle orientation change
+window.addEventListener("orientationchange", function() {
+  setTimeout(closeNavbar, 100);
+});
+
+// Prevent zoom on double tap for mobile
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function(event) {
+  const now = (new Date()).getTime();
+  if (now - lastTouchEnd <= 300) {
+    event.preventDefault();
+  }
+  lastTouchEnd = now;
+}, false);
+
+// Improve touch responsiveness
+if ('ontouchstart' in window) {
+  document.body.classList.add('touch-device');
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   // Smooth scroll for nav links
@@ -66,82 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // LinkedIn icon hover effect for team cards
-  const teamCards = document.querySelectorAll('.eco-card-inner');
-  
-  teamCards.forEach(card => {
-    const linkedinIcon = document.createElement('div');
-    linkedinIcon.className = 'eco-linkedin-icon';
-    linkedinIcon.innerHTML = `
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8Z" stroke="#2ECC71" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M6 9H2V21H6V9Z" stroke="#2ECC71" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M4 6C5.10457 6 6 5.10457 6 4C6 2.89543 5.10457 2 4 2C2.89543 2 2 2.89543 2 4C2 5.10457 2.89543 6 4 6Z" stroke="#2ECC71" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    `;
-    card.appendChild(linkedinIcon);
-    
-    card.addEventListener('mouseenter', () => {
-      linkedinIcon.style.opacity = '1';
-    });
-    
-    card.addEventListener('mouseleave', () => {
-      linkedinIcon.style.opacity = '0';
-    });
-  });
-
-  // Smooth hover effects for cards
-  const cards = document.querySelectorAll('.eco-card-inner');
-  
-  cards.forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      
-      card.style.setProperty('--mouse-x', `${x}px`);
-      card.style.setProperty('--mouse-y', `${y}px`);
-    });
-  });
+  // Update year in footer
+  document.getElementById("year").textContent = new Date().getFullYear();
 });
-/**
- * Portfolio filter functionality
- */
-// Working JavaScript for Blog Filter
-document.addEventListener('DOMContentLoaded', function() {
-  // Get all filter buttons and blog posts
-  const filterButtons = document.querySelectorAll('.filter-btn');
-  const blogPosts = document.querySelectorAll('.eco-post');
-
-  // Add click event to each filter button
-  filterButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      // Remove active class from all buttons
-      filterButtons.forEach(btn => btn.classList.remove('active'));
-      
-      // Add active class to clicked button
-      this.classList.add('active');
-      
-      // Get filter category from data attribute
-      const filterValue = this.getAttribute('data-filter');
-      
-      // Filter posts
-      filterBlogPosts(filterValue);
-    });
-  });
-
-  // Function to filter blog posts
-  function filterBlogPosts(category) {
-    blogPosts.forEach(post => {
-      if (category === 'all' || post.classList.contains(category)) {
-        post.classList.remove('hidden');
-      } else {
-        post.classList.add('hidden');
-      }
-    });
-  }
-
-  // Initialize with all posts showing
-  filterBlogPosts('all');
-});
-document.getElementById("year").textContent = new Date().getFullYear();
